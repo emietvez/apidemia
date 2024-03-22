@@ -1,0 +1,30 @@
+{
+  "name": "apidemia",
+  "version": "1.0.0",
+  "description": "Application to register empidemics",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tailwindcss build -i src/public/tailwind.css -o src/public/styles.css",
+    "start": "node src/index.js",
+    "dev": "nodemon --watch src src/index.js"
+  },
+  "keywords": [],
+  "author": "Emiliano Estevez - Brian Gramajo",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.9",
+    "express": "^4.19.1",
+    "flowbite": "^2.3.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.9.2",
+    "nodemon": "^3.1.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.1"
+  }
+}
