@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import session from "express-session";
 import usersRoutes from "./routes/users.routes.js";
 import patientsRoutes from "./routes/patients.routes.js";
 
@@ -18,7 +19,14 @@ let PORT = 3000;
 if (process.env.ENV == "production") {
   PORT = process.env.PORT || 3000;
 }
-
+app.use(
+  session({
+    secret: "d226c933-c2b2-45e2-95cf-178f6d657bea",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(patientsRoutes);
 app.use(usersRoutes);
