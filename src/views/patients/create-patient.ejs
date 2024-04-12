@@ -1,15 +1,22 @@
 <div class="w-full h-full mt-12">
-  <div class="w-full text-center py-6 flex space-x-6">
-    <h1 class="text-4xl">Crear paciente</h1>
+  <div class="w-full text-center py-6 flex space-x-6 items-center">
+    <a href="/" class="font-bold text-2xl text-gray-900 hover:text-gray-700 bg-gray-200 rounded-full px-3 py-2 shadow-xl">
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="text-4xl"><%= patientId ? 'Modificar' : 'Crear' %> paciente</h1>
   </div>
-  <form class="w-[550px] mx-auto" action="/patients/create" method="POST">
+  <form class="w-[550px] mx-auto" action="/patients/store" method="POST">
     <div class="relative z-0 w-full mb-5 group">
+    <input type="hidden" name="action" value="<%= patientId ? 'update' : 'create' %>">
+    <input type="hidden" name="patient_id" value="<%= patientId ? patientData.id : '' %>">
+
       <input
         type="text"
         name="name"
         id="name"
         class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray-700 dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
         placeholder=""
+        value="<%= patientData ? patientData.name : '' %>"
         required
       />
       <label
@@ -18,13 +25,15 @@
         >Nombre</label
       >
     </div>
+
     <div class="relative z-0 w-full mb-5 group">
       <input
         type="text"
         name="lastname"
         id="lastname"
         class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray-700 dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-        placeholder=" "
+        placeholder=""
+        value="<%= patientData ? patientData.lastname : '' %>"
         required
       />
       <label
@@ -33,22 +42,25 @@
         >Apellido</label
       >
     </div>
+
     <div class="relative z-0 w-full mb-5 group">
       <input
         type="number"
         name="dni"
         id="dni"
         class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray-700 dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-        placeholder=" "
+        placeholder=""
         minlength="8"
+        value="<%= patientData ? patientData.dni : '' %>"
         required
       />
       <label
         for="dni"
         class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-        >Dni</label
+        >DNI</label
       >
     </div>
+
     <div class="relative z-0 w-full mb-5 group">
       <select
         name="type_group"
@@ -56,11 +68,10 @@
         class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray-700 dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
         required
       >
-        <option value="" disabled selected>Selecciona un grupo</option>
-        <option value="A">A</option>
-        <option value="B">B</option>
-        <option value="C">C</option>
-
+        <option value="" disabled <%= patientData ? '' : 'selected' %>>Selecciona un grupo</option>
+        <option value="A" <%= patientData.type_group == 'A' ? 'selected' : '' %>>A</option>
+        <option value="B" <%= patientData.type_group == 'B' ? 'selected' : '' %>>B</option>
+        <option value="C" <%= patientData.type_group == 'B' ? 'selected' : '' %>>C</option>
       </select>
       <label
         for="type_group"
@@ -68,13 +79,15 @@
         >Grupo</label
       >
     </div>
+
     <div class="relative z-0 w-full mb-5 group">
       <input
         type="text"
         name="address"
         id="address"
         class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray-700 dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-        placeholder=" "
+        placeholder=""
+        value="<%= patientData ? patientData.address : '' %>"
         required
       />
       <label
@@ -83,6 +96,7 @@
         >Dirección</label
       >
     </div>
+
     <div class="relative z-0 w-full mb-5 group">
       <select
         name="location_id"
@@ -93,7 +107,7 @@
         <option value="" disabled selected>Selecciona una ubicación</option>
 
         <% locations.forEach(location => { %>
-        <option value="<%= location.id %>"><%= location.name %></option>
+        <option value="<%= location.id %>" <%= patientData.location_id == location.id ? 'selected' : '' %>><%= location.name %></option>
         <% }) %>
       </select>
       <label
@@ -107,7 +121,7 @@
       type="submit"
       class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
     >
-      Crear
+      <%= patientId ? 'Guardar' : 'Crear' %>
     </button>
   </form>
 </div>
