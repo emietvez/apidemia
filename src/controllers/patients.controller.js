@@ -19,37 +19,70 @@ export const getPatients = async (req, res) => {
   }
 };
 
-export const store = async (req, res) => {
+export const createPatient = async (req, res) => {
   try {
     const locationsQuery = await pool.query("SELECT * FROM locations");
     const locations = locationsQuery[0];
 
+    let patientData = {};
     const alertMessage = req.session.alertMessage;
     delete req.session.alertMessage;
 
+    const patientId = req.query.id;
+    if (patientId) {
+      const patientQuery = await pool.query(
+        "SELECT * FROM patients WHERE id = ?",
+        [patientId]
+      );
+      if (patientQuery[0].length > 0) {
+        patientData = patientQuery[0][0];
+      }
+    }
+
     return res.render("index", {
       view: "patients/create-patient.ejs",
-      data: { locations, alertMessage },
+      data: { locations, alertMessage, patientData, patientId },
     });
   } catch (error) {
-    console.error("Error al recuperar las ubicaciones:", error);
+    console.error(
+      "Error al recuperar las ubicaciones o los datos del paciente:",
+      error
+    );
 
     return res.status(500).send("Error interno del servidor");
   }
 };
 
-export const createPatient = async (req, res) => {
+export const storePatient = async (req, res) => {
+  const {
+    action,
+    patient_id,
+    name,
+    lastname,
+    dni,
+    type_group,
+    address,
+    location_id,
+  } = req.body;
 
-  const { name, lastname, dni, type_group, address, location_id } = req.body;
- 
   try {
-    await pool.query(
-      "INSERT INTO patients (name, lastname, dni, type_group, address, location_id) VALUES (?, ?, ?, ?, ?, ?)",
-      [name, lastname, dni, type_group, address, location_id]
-    );
+    if (action === "create") {
+      await pool.query(
+        "INSERT INTO patients (name, lastname, dni, type_group, address, location_id) VALUES (?, ?, ?, ?, ?, ?)",
+        [name, lastname, dni, type_group, address, location_id]
+      );
+    } else if (action === "update") {
+      await pool.query(
+        "UPDATE patients SET name = ?, lastname = ?, dni = ?, type_group = ?, address = ?, location_id = ? WHERE id = ?",
+        [name, lastname, dni, type_group, address, location_id, patient_id]
+      );
+    }
 
     req.session.alertMessage = {
-      message: "Paciente creado exitosamente",
+      message:
+        "Paciente " + action == "create"
+          ? "creado"
+          : "modificado" + " exitosamente",
       type: "success",
     };
 
@@ -57,14 +90,32 @@ export const createPatient = async (req, res) => {
   } catch (error) {
     console.error("Error al crear el paciente:", error);
     req.session.alertMessage = {
-      message: "Error al crear paciente",
+      message:
+        "Error al " + action == "create" ? "crear" : "modificar" + " paciente",
       type: "danger",
     };
-    return res.redirect("/create-patient");
+    return res.redirect("/patients/store");
   }
 };
 
-export const editPatient = async (req, res) => {
-  const { name, lastname, type_group, address, location_id } = req.body;
-  return res.send({ name, lastname, type_group, address, location_id });
+export const deletePatient = async (req, res) => {
+  const patientId = req.query.id; 
+
+  try {
+    await pool.query("DELETE FROM patients WHERE id = ?", [patientId]);
+
+    req.session.alertMessage = {
+      message: "Paciente eliminado exitosamente",
+      type: "success",
+    };
+
+    res.redirect("/");
+  } catch (error) {
+    console.error("Error al eliminar el paciente:", error);
+    req.session.alertMessage = {
+      message: "Error al eliminar el paciente",
+      type: "danger",
+    };
+    res.redirect("/");
+  }
 };
