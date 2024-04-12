@@ -1,8 +1,12 @@
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <div class="w-full text-center py-6 flex space-x-6">
-        <h1 class="text-4xl">Lista de pacientes con Dengue</h1>
-        <a href="/create-patient" class="px-4 bg-green-600 rounded-xl grid place-content-center">Agregar nuevo</a>
-    </div>
+  <div class="w-full text-center py-6 flex space-x-6">
+    <h1 class="text-4xl">Lista de pacientes con Dengue</h1>
+    <a
+      href="/create-patient"
+      class="px-4 bg-green-600 rounded-xl grid place-content-center"
+      >Agregar nuevo</a
+    >
+  </div>
   <table
     class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
   >
@@ -11,6 +15,8 @@
     >
       <tr>
         <th scope="col" class="px-6 py-3">Nombre paciente</th>
+        <th scope="col" class="px-6 py-3">Apellido paciente</th>
+        <th scope="col" class="px-6 py-3">Dni</th>
         <th scope="col" class="px-6 py-3">Dirección</th>
         <th scope="col" class="px-6 py-3">Localidad</th>
         <th scope="col" class="px-6 py-3">Grupo</th>
@@ -26,8 +32,10 @@
           scope="row"
           class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
         >
-          <%= patient.name %>
+          <%= patient.lastname %>
         </th>
+        <td class="px-6 py-4"><%= patient.name %></td>
+        <td class="px-6 py-4"><%= patient.dni %></td>
         <td class="px-6 py-4"><%= patient.address %></td>
         <td class="px-6 py-4"><%= patient.location_name %></td>
         <td class="px-6 py-4"><%= patient.type_group %></td>
