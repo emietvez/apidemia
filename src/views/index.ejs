@@ -8,9 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
-    <%-include('layouts/header'); %> 
-    
-    
+    <%-include('layouts/header'); %>
+    <div class="w-full grid place-content-center mt-12">
+     <%- include(view, data); %>
+    </div>
     <%- include('layouts/footer'); %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
   </body>
