@@ -8,11 +8,36 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
-    <%-include('layouts/header'); %>
+    <%-include('layouts/header'); %> 
+    
+    <% if (data.alertMessage) { %>
+    <div id="alertMessage" class="fixed bottom-4 right-4 z-50 p-4 mb-4 text-sm rounded-xl 
+      <% if (data.alertMessage.type === 'success') { %> text-green-800 bg-green-300 <% } else if (data.alertMessage.type === 'danger') { %> text-red-800 bg-red-300 <% } else { %> text-blue-800 bg-blue-50 <% } %>"
+      role="alert">
+      <% if (data.alertMessage.type === 'success') { %>
+      <span class="font-medium">Excelente!</span>
+      <% } else if (data.alertMessage.type === 'danger') { %>
+      <span class="font-medium">Atencion!</span>
+      <% } else { %>
+      <span class="font-medium">Info alert!</span>
+      <% } %> <%= data.alertMessage.message %>
+    </div>
+    <% } %>
     <div class="w-full grid place-content-center mt-12">
-     <%- include(view, data); %>
+      <%- include(view, data); %>
     </div>
     <%- include('layouts/footer'); %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <script>
+      function hideAlert() {
+        var alertMessage = document.getElementById("alertMessage");
+        if (alertMessage) {
+          setTimeout(function () {
+            alertMessage.style.display = "none";
+          }, 5000);
+        }
+      }
+      window.onload = hideAlert;
+    </script>
   </body>
 </html>
