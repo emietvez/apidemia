@@ -1,6 +1,8 @@
 import "dotenv/config";
 import express from "express";
 import usersRoutes from "./routes/users.routes.js";
+import patientsRoutes from "./routes/patients.routes.js";
+
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -18,9 +20,7 @@ if (process.env.ENV == "production") {
 }
 
 app.use(express.json());
-app.get("/", (req, res) => {
-  res.render("index");
-});
+app.use(patientsRoutes);
 app.use(usersRoutes);
 
 app.listen(PORT, () => {
