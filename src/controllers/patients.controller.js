@@ -6,10 +6,12 @@ export const getPatients = async (req, res) => {
     let patients = await pool.query(
       "SELECT patients.*, locations.name AS location_name FROM patients JOIN locations ON patients.location_id = locations.id"
     );
-    console.log(patients);
+    const alertMessage = req.session.alertMessage;
+    delete req.session.alertMessage;
+
     return res.render("index", {
       view: "patients/list-patients",
-      data: { patients: patients[0] },
+      data: { patients: patients[0], alertMessage },
     });
   } catch (error) {
     console.error("Error fetching patients:", error);
@@ -17,29 +19,52 @@ export const getPatients = async (req, res) => {
   }
 };
 
-export const store = (req, res) => {
+export const store = async (req, res) => {
+  try {
+    const locationsQuery = await pool.query("SELECT * FROM locations");
+    const locations = locationsQuery[0];
+
+    const alertMessage = req.session.alertMessage;
+    delete req.session.alertMessage;
+
     return res.render("index", {
-        view: 'patients/create-patient.ejs',
-    })
-}
+      view: "patients/create-patient.ejs",
+      data: { locations, alertMessage },
+    });
+  } catch (error) {
+    console.error("Error al recuperar las ubicaciones:", error);
 
-// export const createUser = async (req, res) => {
-//   const { username, email, password, active, create_at, update_at } = req.body;
+    return res.status(500).send("Error interno del servidor");
+  }
+};
 
-//   bcrypt.hash(password, 4, async (err, hash) => {
-//     if (err) {
-//       console.error("Error al hashear la contraseña:", err);
-//       return res.status(500).send("Error al hashear la contraseña");
-//     }
-//     try {
-//       const [rows] = await pool.query(
-//         "INSERT INTO users (username, email, password, active, created_at, updated_at) VALUES (?,?,?,?,?,?)",
-//         [username, email, hash, active, create_at, update_at]
-//       );
-//       res.send({ id: rows.insertId, username: username, email: email });
-//     } catch (error) {
-//       console.error("Error al insertar usuario:", error);
-//       res.status(500).send("Error al insertar usuario");
-//     }
-//   });
-// };
+export const createPatient = async (req, res) => {
+
+  const { name, lastname, dni, type_group, address, location_id } = req.body;
+ 
+  try {
+    await pool.query(
+      "INSERT INTO patients (name, lastname, dni, type_group, address, location_id) VALUES (?, ?, ?, ?, ?, ?)",
+      [name, lastname, dni, type_group, address, location_id]
+    );
+
+    req.session.alertMessage = {
+      message: "Paciente creado exitosamente",
+      type: "success",
+    };
+
+    return res.redirect("/");
+  } catch (error) {
+    console.error("Error al crear el paciente:", error);
+    req.session.alertMessage = {
+      message: "Error al crear paciente",
+      type: "danger",
+    };
+    return res.redirect("/create-patient");
+  }
+};
+
+export const editPatient = async (req, res) => {
+  const { name, lastname, type_group, address, location_id } = req.body;
+  return res.send({ name, lastname, type_group, address, location_id });
+};
