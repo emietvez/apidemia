@@ -2,7 +2,7 @@
   <div class="w-full text-center py-6 flex space-x-6">
     <h1 class="text-4xl">Lista de pacientes con Dengue</h1>
     <a
-      href="/create-patient"
+      href="/patients/store"
       class="px-4 bg-green-600 rounded-xl grid place-content-center"
       >Agregar nuevo</a
     >
@@ -39,12 +39,24 @@
         <td class="px-6 py-4"><%= patient.address %></td>
         <td class="px-6 py-4"><%= patient.location_name %></td>
         <td class="px-6 py-4"><%= patient.type_group %></td>
-        <td class="px-6 py-4">
+        <td class="px-6 py-4 grid">
           <a
-            href="#"
+            href="/patients/store?id=<%= patient.id %>"
             class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-            >Edit</a
+            >Editar</a
           >
+          <form
+            action="/patient/delete?id=<%= patient.id %>"
+            method="POST"
+            onsubmit="return confirm('¿Estás seguro de que quieres eliminar este paciente?');"
+          >
+            <button
+              type="submit"
+              class="font-medium text-red-600 dark:text-red-500 hover:underline"
+            >
+              Eliminar
+            </button>
+          </form>
         </td>
       </tr>
       <% }) %>
